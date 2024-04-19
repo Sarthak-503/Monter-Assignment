@@ -1,27 +1,28 @@
-const express = require('express');
+const app =require("./app");
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const userRoutes = require('./Routes/userRoutes');
 const dotenv = require("dotenv");
-const app = express();
+const connectDatabase = require("./config/database");
 
 dotenv.config({path:"config/config.env"});
 
 // Middleware
 app.use(bodyParser.json());
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/myapp', {
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true,
-  // useCreateIndex: true,
-})
-.then(() => console.log('MongoDB Connected'))
-.catch(err => console.log(err));
-
-// Routes
-app.use('/api/user', userRoutes);
-
+// Connect to Database (MongoDB)
+connectDatabase();
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server started on port http://localhost:${PORT}`));
+const server = app.listen(PORT, () =>{
+  console.log(`Server started on port http://localhost:${PORT}`);
+
+});
+
+process.on("unhandledRejection", err => {
+  console.log(`Error :${err.message}`);
+  console.log(`Shutting down the server due to  unhandled Promise Rejction`);
+
+  server.close(()=>{
+      process.exit(1);
+  })
+})
