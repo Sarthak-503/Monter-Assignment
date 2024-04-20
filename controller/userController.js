@@ -1,11 +1,10 @@
 const User = require("../Models/userModel");
-const bcrypt = require('bcryptjs');
 const sendOTP = require('../utils/sendMail');
+const catchAsyncError = require("../middleware/catchasyncerror"); 
 
 // Register A User
 
-exports.registerUser = async (req, res) => {
-  try {
+exports.registerUser = catchAsyncError( async (req, res) => {
     const { email, password } = req.body;
 
     // Check if user already exists
@@ -35,11 +34,7 @@ exports.registerUser = async (req, res) => {
     // Save user to the database
     await user.save();
     res.json({ msg: 'OTP sent to email for verification' });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
+  })
 
 exports.verifyOTP = async (req, res) => {
   try {

@@ -1,20 +1,20 @@
-const app =require("./app");
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const app = require("./app");
 const dotenv = require("dotenv");
 const connectDatabase = require("./config/database");
 
-dotenv.config({path:"config/config.env"});
+// process.on("uncaughtException",(err)=>{
+//   console.log(`Error: ${err.message}`);
+//   console.log(`Shutting down the server due to Uncaught Exception`);
+//   process.exit(1);
+// })
 
-// Middleware
-app.use(bodyParser.json());
+dotenv.config({path:"config/config.env"});
 
 // Connect to Database (MongoDB)
 connectDatabase();
-const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () =>{
-  console.log(`Server started on port http://localhost:${PORT}`);
+const server = app.listen(process.env.PORT, () =>{
+  console.log(`Server started on port http://localhost:${process.env.PORT}`);
 
 });
 
